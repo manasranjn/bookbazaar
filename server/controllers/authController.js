@@ -99,3 +99,67 @@ exports.loginUser = async (req, res) => {
         });
     }
 };
+
+
+//! GET ALL USERS (ADMIN)
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select("-password");
+
+        res.status(200).json({
+            success: true,
+            data: users
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch users",
+            error: error.message
+        });
+    }
+};
+
+
+//! DELETE USER (ADMIN)
+exports.deleteUser = async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({
+            success: true,
+            message: "User deleted"
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Delete failed",
+            error: error.message
+        });
+    }
+};
+
+
+//! UPDATE ROLE (ADMIN)
+exports.updateUserRole = async (req, res) => {
+    try {
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { role: req.body.role },
+            { new: true }
+        ).select("-password");
+
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Update failed",
+            error: error.message
+        });
+    }
+};
